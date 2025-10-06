@@ -12,7 +12,7 @@ const Stack = createStackNavigator();
 const MainNavigationStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="MAIN" component={DIYStorageApp} />
+      {/* <Stack.Screen name="MAIN" component={DIYStorageApp} /> */}
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="StorageScreen" component={StorageScreen} />
       <Stack.Screen name="AskAIScreen" component={AskAIScreen} />
