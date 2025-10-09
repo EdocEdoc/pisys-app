@@ -9,8 +9,10 @@ import { Feather } from "@expo/vector-icons";
 import AddStoragePrompt from "../components/AddStoragePrompt";
 import ScanQrPrompt from "../components/ScanQrPrompt";
 import { useAppContext } from "../context/AppContext";
+import { useNavigation } from "@react-navigation/native";
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = () => {
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const [showModal, setShowModal] = useState(null);
   const { storageContext } = useAppContext();
@@ -23,6 +25,8 @@ const HomeScreen = ({ navigation }) => {
     const toStore = {
       ...currStorage,
       id: Date.now().toString() + Math.random().toString(36).substring(2, 7),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     console.log("🚀 ~ onStorageAdd ~ toStore:", toStore);
@@ -122,7 +126,7 @@ const HomeScreen = ({ navigation }) => {
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => {
-                //navigation.navigate("StorageScreen", { storageId: item.id });
+                navigation.navigate("StorageScreen", { storage: item });
               }}
               style={{
                 backgroundColor: "#fff",
