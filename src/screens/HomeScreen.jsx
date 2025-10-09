@@ -6,10 +6,13 @@ import {
 } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import AddStoragePrompt from "../components/AddStoragePrompt";
+import ScanQrPrompt from "../components/ScanQrPrompt";
 
 const HomeScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const [storages, setStorages] = useState([]);
+  const [showModal, setShowModal] = useState(null);
 
   return (
     <View style={{ flex: 1, backgroundColor: "#f9fafb" }}>
@@ -37,7 +40,7 @@ const HomeScreen = ({ navigation }) => {
 
       <View style={{ flexDirection: "row", padding: 16, gap: 12 }}>
         <TouchableOpacity
-          onPress={() => navigation.navigate("StorageScreen")}
+          onPress={() => setShowModal("ADD_STORAGE")}
           style={{
             flex: 1,
             backgroundColor: "#3b82f6",
@@ -54,7 +57,7 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => {}}
+          onPress={() => setShowModal("SCAN_QR")}
           style={{
             flex: 1,
             backgroundColor: "#10b981",
@@ -99,6 +102,10 @@ const HomeScreen = ({ navigation }) => {
           <Text>You Have Storage</Text>
         </View>
       )}
+
+      <AddStoragePrompt showModal={showModal} setShowModal={setShowModal} />
+
+      <ScanQrPrompt showModal={showModal} setShowModal={setShowModal} />
     </View>
   );
 };
