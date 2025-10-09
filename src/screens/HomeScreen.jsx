@@ -10,6 +10,7 @@ import AddStoragePrompt from "../components/AddStoragePrompt";
 import ScanQrPrompt from "../components/ScanQrPrompt";
 import { useAppContext } from "../context/AppContext";
 import { useNavigation } from "@react-navigation/native";
+import QRModal from "../components/QRModal";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -18,6 +19,7 @@ const HomeScreen = () => {
   const { storageContext } = useAppContext();
   const { storages, addStorage, deleteStorage, isLoading } = storageContext;
   const [currStorage, setCurrStorage] = useState(null);
+  const [showQRModal, setShowQRModal] = useState(false);
 
   const onStorageAdd = () => {
     if (currStorage == null) return;
@@ -164,7 +166,7 @@ const HomeScreen = () => {
                   onPress={(e) => {
                     e.stopPropagation();
                     setCurrStorage(item);
-                    //setShowQRModal(true);
+                    setShowQRModal(true);
                   }}
                   style={{ padding: 8 }}
                 >
@@ -195,6 +197,13 @@ const HomeScreen = () => {
       />
 
       <ScanQrPrompt showModal={showModal} setShowModal={setShowModal} />
+
+      <QRModal
+        showQRModal={showQRModal}
+        storage={currStorage}
+        setShowQRModal={setShowQRModal}
+        setCurrStorage={setCurrStorage}
+      />
     </View>
   );
 };
