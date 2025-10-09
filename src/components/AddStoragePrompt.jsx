@@ -3,7 +3,13 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
-const AddStoragePrompt = ({ showModal, setShowModal }) => {
+const AddStoragePrompt = ({
+  showModal,
+  setShowModal,
+  setCurrStorage,
+  onStorageAdd,
+  currStorage,
+}) => {
   return (
     <Modal
       visible={showModal === "ADD_STORAGE"}
@@ -39,15 +45,22 @@ const AddStoragePrompt = ({ showModal, setShowModal }) => {
             >
               Add Storage
             </Text>
-            <TouchableOpacity onPress={() => setShowModal(null)}>
+            <TouchableOpacity
+              onPress={() => {
+                setCurrStorage(null);
+                setShowModal(null);
+              }}
+            >
               <Feather name="x" size={24} color="#6b7280" />
             </TouchableOpacity>
           </View>
 
           <TextInput
             placeholder="Storage Name *"
-            value={""}
-            onChangeText={() => {}}
+            value={currStorage?.name || ""}
+            onChangeText={(text) => {
+              setCurrStorage({ ...currStorage, name: text });
+            }}
             style={{
               borderWidth: 1,
               borderColor: "#d1d5db",
@@ -60,8 +73,10 @@ const AddStoragePrompt = ({ showModal, setShowModal }) => {
 
           <TextInput
             placeholder="Location (optional)"
-            value={""}
-            onChangeText={() => {}}
+            value={currStorage?.location || ""}
+            onChangeText={(text) => {
+              setCurrStorage({ ...currStorage, location: text });
+            }}
             style={{
               borderWidth: 1,
               borderColor: "#d1d5db",
@@ -73,7 +88,7 @@ const AddStoragePrompt = ({ showModal, setShowModal }) => {
           />
 
           <TouchableOpacity
-            onPress={() => {}}
+            onPress={() => onStorageAdd()}
             style={{
               backgroundColor: "#3b82f6",
               padding: 16,

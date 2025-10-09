@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, FlatList, StyleSheet, Text, View } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
@@ -8,11 +8,29 @@ import { TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import AddStoragePrompt from "../components/AddStoragePrompt";
 import ScanQrPrompt from "../components/ScanQrPrompt";
+import { useAppContext } from "../context/AppContext";
 
 const HomeScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
-  const [storages, setStorages] = useState([]);
   const [showModal, setShowModal] = useState(null);
+  const { storageContext } = useAppContext();
+  const { storages, addStorage, deleteStorage, isLoading } = storageContext;
+  const [currStorage, setCurrStorage] = useState(null);
+
+  const onStorageAdd = () => {
+    if (currStorage == null) return;
+
+    const toStore = {
+      ...currStorage,
+      id: Date.now().toString() + Math.random().toString(36).substring(2, 7),
+    };
+
+    console.log("🚀 ~ onStorageAdd ~ toStore:", toStore);
+
+    addStorage(toStore);
+    setCurrStorage(null);
+    setShowModal(null);
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: "#f9fafb" }}>
@@ -98,12 +116,79 @@ const HomeScreen = ({ navigation }) => {
           </Text>
         </View>
       ) : (
-        <View style={{ padding: 16 }}>
-          <Text>You Have Storage</Text>
-        </View>
+        <FlatList
+          data={storages}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => {
+                //navigation.navigate("StorageScreen", { storageId: item.id });
+              }}
+              style={{
+                backgroundColor: "#fff",
+                padding: 16,
+                borderRadius: 12,
+                marginBottom: 12,
+                borderWidth: 1,
+                borderColor: "#e5e7eb",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <View style={{ flex: 1 }}>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "600",
+                    color: "#111827",
+                  }}
+                >
+                  {item.name}
+                </Text>
+                {item.location && (
+                  <Text style={{ color: "#6b7280", marginTop: 4 }}>
+                    📍 {item.location}
+                  </Text>
+                )}
+                <Text style={{ color: "#9ca3af", marginTop: 4, fontSize: 13 }}>
+                  {item?.items?.length || "0"} items
+                </Text>
+              </View>
+              <View style={{ flexDirection: "row", gap: 8 }}>
+                <TouchableOpacity
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    setCurrStorage(item);
+                    //setShowQRModal(true);
+                  }}
+                  style={{ padding: 8 }}
+                >
+                  <Feather name="camera" size={20} color="#3b82f6" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    deleteStorage(item.id);
+                  }}
+                  style={{ padding: 8 }}
+                >
+                  <Feather name="trash-2" size={20} color="#ef4444" />
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          )}
+          contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
+        />
       )}
 
-      <AddStoragePrompt showModal={showModal} setShowModal={setShowModal} />
+      <AddStoragePrompt
+        showModal={showModal}
+        setShowModal={setShowModal}
+        setCurrStorage={setCurrStorage}
+        onStorageAdd={onStorageAdd}
+        currStorage={currStorage}
+      />
 
       <ScanQrPrompt showModal={showModal} setShowModal={setShowModal} />
     </View>
